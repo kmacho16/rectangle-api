@@ -42,32 +42,4 @@ public class RectangleEntity extends Rectangle {
         Rectangle myR =  super.intersection(r);
         return new RectangleEntity(r.x,r.y,r.width, r.height);
     }
-
-    public boolean isContained(RectangleEntity rectangle){
-        RectangleEntity mainRectangle;
-        RectangleEntity secondRectangle;
-        if(this.getArea() > rectangle.getArea()) {
-            mainRectangle = this;
-            secondRectangle = rectangle;
-        }else {
-            mainRectangle = rectangle;
-            secondRectangle = this;
-        }
-        double main_x1 = mainRectangle.getX();
-        double main_y1 = mainRectangle.getY() + mainRectangle.getHeight();
-        double main_x2 = mainRectangle.getX() + mainRectangle.getWidth();
-        double main_y2 = mainRectangle.getY();
-
-        double second_x1 = secondRectangle.getX();
-        double second_y1 = secondRectangle.getY() + secondRectangle.getHeight();
-        double second_x2 = secondRectangle.getX() + secondRectangle.getWidth();
-        double second_y2 = secondRectangle.getY();
-
-        if(main_x1 <= second_x1 && main_y1 >= second_y1) {
-            if(main_x2 >= second_x2 && main_y2 <= second_y2){
-                return true;
-            }
-        }
-        return false;
-    }
 }
