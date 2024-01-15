@@ -1,9 +1,10 @@
 package com.kmacho.rectangleapi.domain.service;
 
 
-import com.kmacho.rectangleapi.application.response.RectangleResponse;
 import com.kmacho.rectangleapi.application.response.RectangleValidations;
 import com.kmacho.rectangleapi.domain.model.RectangleEntity;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -12,21 +13,23 @@ import java.util.Map;
 @Service
 public class RectangleServices {
 
+    @Autowired
     private RectangleValidations validations;
 
     public RectangleValidations validateRectangles(RectangleEntity r1, RectangleEntity r2) {
-        validations = new RectangleValidations();
+        //validations = new RectangleValidations();
         validations.setAdjacencyProperties(new HashMap<>());
-        getIntersection(r1, r2);
+
+        validations.setIntersection(getIntersection(r1, r2));
         validations.setContainment(isContained(r1, r2));
+        validations.setAdjacency(validateAdjacency(r1,r2));
+
         System.out.println(isContained(r1, r2));
-        validateAdjacency(r1,r2);
         return validations;
     }
 
-    public void getIntersection(RectangleEntity r1, RectangleEntity r2) {
+    public boolean getIntersection(RectangleEntity r1, RectangleEntity r2) {
         boolean intersects = r1.intersects(r2);
-        validations.setIntersection(intersects);
         if(intersects) {
             System.out.println("is Intersection");
             RectangleEntity intersection =  r1.intersection(r2);
@@ -37,14 +40,15 @@ public class RectangleServices {
             map.put("Height", intersection.getHeight());
             validations.setIntersectionProperties(map);
         }
+        return intersects;
     }
 
-    public void validateAdjacency(RectangleEntity r1, RectangleEntity r2) {
+    public boolean validateAdjacency(RectangleEntity r1, RectangleEntity r2) {
         boolean exist = isHorizontalAdjacency(r1,r2);
         if(!exist) {
             exist = isVerticalAdjacency(r1,r2);
         }
-        validations.setAdjacency(exist);
+        return exist;
     }
 
     public Boolean isHorizontalAdjacency(RectangleEntity r1, RectangleEntity r2) {
