@@ -11,8 +11,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class RectangleValidations {
     private boolean isIntersection;
-    private Map<String, Double> intersectionProperties;
     private boolean isContainment;
     private boolean isAdjacency;
     private Map<String, Boolean> adjacencyProperties;
+    private Map<String, Double> intersectionProperties;
 }

@@ -16,10 +16,11 @@ public class RectangleServices {
 
     public RectangleValidations validateRectangles(RectangleEntity r1, RectangleEntity r2) {
         validations = new RectangleValidations();
+        validations.setAdjacencyProperties(new HashMap<>());
         getIntersection(r1, r2);
         validations.setContainment(isContained(r1, r2));
         System.out.println(isContained(r1, r2));
-
+        validateAdjacency(r1,r2);
         return validations;
     }
 
@@ -31,7 +32,7 @@ public class RectangleServices {
             RectangleEntity intersection =  r1.intersection(r2);
             Map<String, Double> map = new HashMap<>();
             map.put("X", intersection.getX());
-            map.put("Y", intersection.getX());
+            map.put("Y", intersection.getY());
             map.put("Width", intersection.getWidth());
             map.put("Height", intersection.getHeight());
             validations.setIntersectionProperties(map);
@@ -39,51 +40,65 @@ public class RectangleServices {
     }
 
     public void validateAdjacency(RectangleEntity r1, RectangleEntity r2) {
-        if(isHorizontalAdjacency(r1,r2)) {
-            System.out.println("Exist horizontal");
-        } else if(isVerticalAdjacency(r1,r2)){
-            System.out.println("Exist vertical");
+        boolean exist = isHorizontalAdjacency(r1,r2);
+        if(!exist) {
+            exist = isVerticalAdjacency(r1,r2);
         }
+        validations.setAdjacency(exist);
     }
 
-    public boolean isHorizontalAdjacency(RectangleEntity r1, RectangleEntity r2) {
+    public Boolean isHorizontalAdjacency(RectangleEntity r1, RectangleEntity r2) {
+        Boolean exist = false;
+        Map<String, Boolean> map = new HashMap<String, Boolean>() {{
+            put("Proper-H", false);
+            put("SubLine-H", false);
+            put("Partial-H", false);
+        }};
         if(((r1.getX()+ r1.getWidth())) == r2.getX() || (r1.getX() == (r2.getX() + r2.getWidth()) )) {
             if(((r1.getY() + r1.getHeight()) >= r2.getY()) && (r1.getY() <= (r2.getY() + r2.getHeight()))){
+                exist = true;
                 if(r1.getLeftSide().equals(r2.getRightSide()) || r1.getRightSide().equals(r2.getLeftSide())){
-                    System.out.println("Proper horizontal");
-                    return true;
+                    map.put("Proper-H", true);
                 } else{
-                    if(r1.getHeight() > r2.getHeight() || r1.getHeight() < r2.getHeight()){
-                        System.out.println("Subline horizontal");
-                        return true;
-                    }else{
-                        System.out.println("partial horizontal");
-                        return true;
+                    if (r1.getHeight() > r2.getHeight() || r1.getHeight() < r2.getHeight()){
+                        map.put("SubLine-H", true);
+                    } else {
+                        map.put("Partial-H", true);
                     }
                 }
             }
         }
-        return false;
+        if (exist){
+            validations.setAdjacencyProperties(map);
+        }
+        return exist;
     }
 
-    public boolean isVerticalAdjacency(RectangleEntity r1, RectangleEntity r2) {
+    public Boolean isVerticalAdjacency(RectangleEntity r1, RectangleEntity r2) {
+        Boolean exist = false;
+        Map<String, Boolean> map = new HashMap<String, Boolean>() {{
+            put("Proper-V", false);
+            put("SubLine-V", false);
+            put("Partial-V", false);
+        }};
         if((r1.getY() == (r2.getY() + r2.getHeight())) || ((r1.getY()+r1.getHeight()) == r2.getY())){
             if(((r1.getX()+ r1.getWidth())) >= r2.getX() && (r1.getX() <= (r2.getX() + r2.getWidth()) )) {
+                exist = true;
                 if(r1.getTopSide().equals(r2.getBottomSide()) || r1.getBottomSide().equals(r2.getTopSide())){
-                    System.out.println("Proper vertical");
-                    return true;
+                    map.put("Proper-V", true);
                 } else{
                     if(r1.getWidth()>r2.getWidth() || r1.getWidth() < r2.getWidth()){
-                        System.out.println("Subline vertical");
-                        return true;
+                        map.put("SubLine-V", true);
                     }else{
-                        System.out.println("partial vertical");
-                        return true;
+                        map.put("Partial-V", true);
                     }
                 }
             }
         }
-        return false;
+        if (exist){
+            validations.setAdjacencyProperties(map);
+        }
+        return exist;
     }
 
     public boolean isContained(RectangleEntity r1, RectangleEntity r2){

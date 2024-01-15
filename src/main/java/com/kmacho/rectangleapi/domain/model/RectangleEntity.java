@@ -40,6 +40,6 @@ public class RectangleEntity extends Rectangle {
 
     public RectangleEntity intersection(Rectangle r) {
         Rectangle myR =  super.intersection(r);
-        return new RectangleEntity(r.x,r.y,r.width, r.height);
+        return new RectangleEntity(myR.x, myR.y, myR.width, myR.height);
     }
 }
